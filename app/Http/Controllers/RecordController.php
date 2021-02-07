@@ -8,13 +8,21 @@ use DOMXPath;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class RecordController extends Controller
 {
-    public function get() {
-        $content = Storage::get('public/test.html');
+    public function get(Request $request) {
+        $validator = $this->validateRequest();
 
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $content = file_get_contents($request->get('url'));
         $encode = json_encode($content);
+
+        dd(explode('<hr width="100%">', $content));
 
         $table = explode('<hr width="100%">', $content)[1];
         $table = strtr($table, $this->formatText());
@@ -187,5 +195,14 @@ class RecordController extends Controller
         }
 
         return $result;
+    }
+
+    private function validateRequest(){
+        return Validator::make(request()->all(), [
+            'url' => 'required',
+            'name' => 'required',
+            'number' => 'required',
+            'department' => 'required'
+        ]);
     }
 }
