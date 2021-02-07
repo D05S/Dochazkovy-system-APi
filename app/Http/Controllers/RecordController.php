@@ -199,8 +199,8 @@ class RecordController extends Controller
 
     private function validateRequest(){
         return Validator::make(request()->all(), [
-            'url' => 'required',
-            'name' => 'required',
+            'pathInfo' => 'required',
+            'nameOfUser' => 'required',
             'number' => 'required',
             'department' => 'required'
         ]);
