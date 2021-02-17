@@ -19,17 +19,15 @@ class RecordController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $content = file_get_contents($request->get('url'));
-        $encode = json_encode($content);
+        $content = file_get_contents($request->get('pathInfo'));
+        $utf8 =  iconv('windows-1250', 'UTF-8', $content);
 
-        dd(explode('<hr width="100%">', $content));
-
-        $table = explode('<hr width="100%">', $content)[1];
+        $table = explode('<hr width="100%">', $utf8)[1];
         $table = strtr($table, $this->formatText());
         $table = str_replace("&nbsp;", "", $table);
 
         // Plain text without HTML
-        $text = strip_tags($encode);
+        $text = strip_tags($utf8);
 
         // Cleaning process
         $clean = str_replace("&nbsp;", "", $text);
@@ -174,7 +172,7 @@ class RecordController extends Controller
             "\u016f" =>"ů",
             "\u0161" =>"š",
             "\u0160" =>"Š",
-            "\u010c" => "Č"
+            "\u010c" => "Č",
         );
     }
 
