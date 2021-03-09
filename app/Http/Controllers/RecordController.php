@@ -26,7 +26,7 @@ class RecordController extends Controller
         $table = strtr($table, $this->formatText());
         $table = str_replace("&nbsp;", "", $table);
 
-        // Plain text without HTML
+        // Plain text without HTML strip_tags
         $text = strip_tags($utf8);
 
         // Cleaning process
@@ -48,7 +48,10 @@ class RecordController extends Controller
         $lekar = explode("dnů", explode("Lékařdny", $format)[1])[0];
         $dovolena = explode("dnů", explode("Dovolenádny", $format)[1])[0];
 
-        $records = $this->tableToJson('<html><head><meta charset="UTF-8"></head><body>' . $table . '</body></html>');
+        $records = $this->tableToJson(
+            '<html><head><meta charset="UTF-8"></head><body>' . $table . '</body></html>'
+        );
+
         unset($records[0]);
         $records = array_values($records);
         $response = [];
